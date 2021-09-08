@@ -13,7 +13,11 @@ import time
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'components')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from mqtt_handler import *
+
+FRONTEND_NAME = "Frontend"
+MQTT_BROKER_IP = "localhost"
 
 server = flask.Flask('app')
 server.secret_key = os.environ.get('secret_key', 'secret')
@@ -22,8 +26,12 @@ server.secret_key = os.environ.get('secret_key', 'secret')
 
 app = dash.Dash('app', server=server)
 
+mqtt = MqttHandler(FRONTEND_NAME, MQTT_BROKER_IP)
+
 app.scripts.config.serve_locally = False
 dcc._js_dist[0]['external_url'] = 'https://cdn.plot.ly/plotly-basic-latest.min.js'
+
+
 
 # test_graph = GraphComponent({'x':[1,3,5,2,7,8], 'y':[2,4,6,9,3,0]}, "Test",
 #                            "test-class", "graph-1", "container-1")
@@ -78,6 +86,11 @@ app.layout = html.Div(children = [
 def button_clicked(n_clicks):
   if n_clicks is None:
     return dash.no_update
+
+  mqtt.client.publish(MQTT_PUB_TOPICS['SHUTDOWN_TOPIC'],
+                    payload=1,
+                    qos=2,
+                    retain=False)
   return 'stop button pressed'
 
 @app.callback(Output('live-graph', 'figure'),
@@ -85,7 +98,7 @@ def button_clicked(n_clicks):
 def update_graph(n):
   X.append(X[-1]+1)
   #Y.append(Y[-1]+2)
-  Y.append(random.randint(0,100))
+  Y.append(mqtt.imu_reading)
 
   trace = go.Scatter(
     x=list(X),
@@ -99,4 +112,4 @@ def update_graph(n):
     yaxis=dict(title = 'SoC (%)', range=[min(Y),max(Y)]))}
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
