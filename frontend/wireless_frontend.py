@@ -6,6 +6,8 @@ import plotly.express as px
 import plotly.graph_objs as go
 from collections import deque
 import random
+import dash_bootstrap_components as dbc
+
 
 import flask
 import pandas as pd
@@ -16,25 +18,14 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'components')))
 
 server = flask.Flask('app')
-server.secret_key = os.environ.get('secret_key', 'secret')
+#server.secret_key = os.environ.get('secret_key', 'secret')
 
 # df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/hello-world-stock.csv')
 
 app = dash.Dash('app', server=server)
 
-app.scripts.config.serve_locally = False
+app.scripts.config.serve_locally = True
 dcc._js_dist[0]['external_url'] = 'https://cdn.plot.ly/plotly-basic-latest.min.js'
-
-# test_graph = GraphComponent({'x':[1,3,5,2,7,8], 'y':[2,4,6,9,3,0]}, "Test",
-#                            "test-class", "graph-1", "container-1")
-# test_graph.style = {'width': '40%', 'height': '20%'}
-
-# app.layout = html.Div([
-#   test_graph
-# ], className="container", style={"background-image": "linear-gradient(180deg, blue, lightblue)"})
-df = pd.DataFrame ({'x':[1,3,5,2,7,8], 'y':[2,4,6,9,3,0]})
-fig = go.Figure(data=[go.Scatter(x=[1,3,5,2,7,8], y=[2,4,6,9,3,0])], 
-layout_title_text='Battery SOC')
 
 #initial figure of live updating test graph
 X = deque(maxlen=10)
@@ -43,31 +34,66 @@ Y = deque(maxlen=10)
 Y.append(1)
 initial_trace = go.Scatter(x=list(X), y=list(Y), name='Scatter', mode='lines+markers')
 
+app.layout = html.Div(style={'backgroundColor': '#3A3A3A', 'color': '#3A3A3A', 'height':'100vh', 'width':'100%', 'height':'100%', 'top':'0px', 'left':'0px'},
+#style={'backgroundColor': '#3A3A3A'}, 
+children = [
+  html.H1(children="Wireless GUI",className="wireless_gui",style={'color':'#FF6361','text-align':'center'}),
+  # first row
+  html.Div(dbc.Row(
+    [
+        # first column of first row
+    html.Div(children=[
+      dcc.Graph(
+        id='live-graph', 
+        animate=True, 
+        figure={'data': [initial_trace],
+        'layout': go.Layout(
+          xaxis=dict(range=[min(X), max(X)]), 
+          yaxis=dict(range=[min(Y), max(Y)])),
+          }
+      ),
+      dcc.Interval(id='graph-update', interval=1*1000)
+    ], style={'display': 'inline-block', 'width': '32%', 'vertical-align': 'top',
+    'borderRadius': '15px', 'overflow': 'hidden', 'margin-left': '10px'}),
 
+        # second column of first row
+    html.Div(children=[
+      dcc.Graph(
+        id = 'graph2',
+        figure={'data':[go.Scatter(x=[1,3,5,2,7,8], y=[2,4,6,9,3,0], line_color='#ffa600')],
+        'layout' : go.Layout(title = 'Graph 2',
+        paper_bgcolor= '#262626',
+        plot_bgcolor = '#262626',
+        xaxis=dict(gridcolor = 'white', title = 'x'), 
+        yaxis=dict(gridcolor = 'white', title = 'y'),
+        font_color = '#FF6361'
+        )}
+      )
+    ], style={'display': 'inline-block', 'width': '32%', 'vertical-align': 'top', 
+    'border': '5px grey', 'borderRadius': '15px', 'overflow': 'hidden', 'margin-left': '10px'}),
 
-app.layout = html.Div(children = [
-  #stop button 
-  html.Img(src=app.get_asset_url('stop_button.png'),  #(src='assets/stop_button.png', 
-    style={'height':'20%', 'width':'20%'}, id='stop-button'),
-    html.Div(id='out', children='Press button to stop vehicle'),
-  
-  #test graph
-  dcc.Graph(
-     id='test-graph',
-     figure= fig
-     ),
-  
-  #test graph with live updating
-  dcc.Graph(
-    id='live-graph', 
-    animate=True, 
-    figure={'data': [initial_trace],
-    'layout': go.Layout(
-      title = 'Battery SoC',
-      xaxis=dict(range=[min(X), max(X)]), 
-      yaxis=dict(range=[min(Y), max(Y)]))
-      }),
-  dcc.Interval(id='graph-update', interval=1*1000),
+        # third column of first row
+    html.Div(children=[
+      dcc.Graph(
+        id = 'graph3', 
+        figure={'data':[go.Scatter(x=[1,3,5,2,7,8], y=[2,4,6,9,3,0], line_color='#ffa600')],
+        'layout' : go.Layout(title = 'Graph 3',paper_bgcolor= '#262626',
+        plot_bgcolor = '#262626',
+        xaxis=dict(gridcolor = 'white', title = 'x'), 
+        yaxis=dict(gridcolor = 'white', title = 'y'),
+        font_color = '#FF6361')}
+      )
+
+    ], style={'display': 'inline-block', 'width': '32%', 'vertical-align': 'top', 
+    'borderRadius': '15px', 'overflow': 'hidden', 'margin-left': '10px'}),
+
+  ], no_gutters=True)),
+
+  # second row
+  html.Div(
+    html.Div(children=[html.Img(src=app.get_asset_url('stop_button.png'),  
+      style={'height':'20%', 'width':'20%', 'textAlign':'center'}, id='stop-button'),
+      html.Div(id='out', children='Press button to stop vehicle', style={'color': 'orange'})]))
 ])
 
 #button click
@@ -80,8 +106,9 @@ def button_clicked(n_clicks):
     return dash.no_update
   return 'stop button pressed'
 
-@app.callback(Output('live-graph', 'figure'),
-[Input('graph-update', 'n_intervals')])
+@app.callback(
+  Output(component_id='live-graph', component_property='figure'),
+[Input(component_id='graph-update', component_property='n_intervals')])
 def update_graph(n):
   X.append(X[-1]+1)
   #Y.append(Y[-1]+2)
@@ -91,12 +118,17 @@ def update_graph(n):
     x=list(X),
     y=list(Y),
     name = 'Scatter',
-    mode = 'lines+markers')
+    mode = 'lines+markers', line_color='#ffa600')
 
   return {'data': [trace], 
   'layout' : go.Layout(
-    xaxis=dict(title = 'time (s)', range=[min(X),max(X)]), 
-    yaxis=dict(title = 'SoC (%)', range=[min(Y),max(Y)]))}
+    paper_bgcolor= '#262626',
+    plot_bgcolor = '#262626',
+    title = 'Battery SoC',
+    xaxis=dict(gridcolor = 'white', title = 'time (s)', range=[min(X),max(X)]), 
+    yaxis=dict(gridcolor = 'white', title = 'SoC (%)', range=[min(Y),max(Y)]),
+    font_color = '#FF6361'
+    )}
 
 if __name__ == '__main__':
     app.run_server(debug=True)
