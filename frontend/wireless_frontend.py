@@ -33,19 +33,6 @@ mqtt = MqttHandler(FRONTEND_NAME, MQTT_BROKER_IP)
 app.scripts.config.serve_locally = False
 dcc._js_dist[0]['external_url'] = 'https://cdn.plot.ly/plotly-basic-latest.min.js'
 
-
-
-# test_graph = GraphComponent({'x':[1,3,5,2,7,8], 'y':[2,4,6,9,3,0]}, "Test",
-#                            "test-class", "graph-1", "container-1")
-# test_graph.style = {'width': '40%', 'height': '20%'}
-
-# app.layout = html.Div([
-#   test_graph
-# ], className="container", style={"background-image": "linear-gradient(180deg, blue, lightblue)"})
-df = pd.DataFrame ({'x':[1,3,5,2,7,8], 'y':[2,4,6,9,3,0]})
-fig = go.Figure(data=[go.Scatter(x=[1,3,5,2,7,8], y=[2,4,6,9,3,0])], 
-layout_title_text='Battery SOC')
-
 #initial figure of live updating test graph
 X = deque(maxlen=10)
 X.append(1)
