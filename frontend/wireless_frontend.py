@@ -28,7 +28,7 @@ server = flask.Flask('app')
 
 app = dash.Dash('app', server=server)
 
-mqtt = MqttHandler(FRONTEND_NAME, MQTT_BROKER_IP)
+#mqtt = MqttHandler(FRONTEND_NAME, MQTT_BROKER_IP)
 
 app.scripts.config.serve_locally = False
 dcc._js_dist[0]['external_url'] = 'https://cdn.plot.ly/plotly-basic-latest.min.js'
@@ -43,7 +43,7 @@ initial_trace = go.Scatter(x=list(X), y=list(Y), name='Scatter', mode='lines+mar
 app.layout = html.Div(style={'backgroundColor': '#3A3A3A', 'color': '#3A3A3A', 'height':'100vh', 'width':'100%', 'height':'100%', 'top':'0px', 'left':'0px'},
 #style={'backgroundColor': '#3A3A3A'}, 
 children = [
-  html.H1(children="Wireless GUI",className="wireless_gui",style={'color':'#FF6361','text-align':'center'}),
+  html.H1(children="Wireless GUI",style={'text-align':'center', 'color':'#FF6361'}),
   # first row
   html.Div(dbc.Row(
     [
@@ -66,7 +66,7 @@ children = [
     html.Div(children=[
       dcc.Graph(
         id = 'graph2',
-        figure={'data':[go.Scatter(x=[1,3,5,2,7,8], y=[2,4,6,9,3,0], line_color='#ffa600')],
+        figure={'data':[go.Scatter(x=[1,3,5,7,8], y=[2,4,6,9,13], line_color='#ffa600')],
         'layout' : go.Layout(title = 'Graph 2',
         paper_bgcolor= '#262626',
         plot_bgcolor = '#262626',
@@ -82,7 +82,7 @@ children = [
     html.Div(children=[
       dcc.Graph(
         id = 'graph3', 
-        figure={'data':[go.Scatter(x=[1,3,5,2,7,8], y=[2,4,6,9,3,0], line_color='#ffa600')],
+        figure={'data':[go.Scatter(x=[1,3,7,9,11], y=[3,5,12,14,15], line_color='#ffa600')],
         'layout' : go.Layout(title = 'Graph 3',paper_bgcolor= '#262626',
         plot_bgcolor = '#262626',
         xaxis=dict(gridcolor = 'white', title = 'x'), 
@@ -97,9 +97,10 @@ children = [
 
   # second row
   html.Div(
-    html.Div(children=[html.Img(src=app.get_asset_url('stop_button.png'),  
-      style={'height':'20%', 'width':'20%', 'textAlign':'center'}, id='stop-button'),
-      html.Div(id='out', children='Press button to stop vehicle', style={'color': 'orange'})]))
+    html.Div(children=[html.Img(src='/assets/stop_button.png',  
+      style={'height':'20%', 'width':'20%'}, id='stop-button'),
+      html.Div(id='out', children='Press button to stop vehicle', style={'color': 'orange'})],
+      style = {'textAlign':'center'}))
 ])
 
 #button click
@@ -122,8 +123,8 @@ def button_clicked(n_clicks):
 [Input(component_id='graph-update', component_property='n_intervals')])
 def update_graph(n):
   X.append(X[-1]+1)
-  #Y.append(Y[-1]+2)
-  Y.append(mqtt.imu_reading)
+  Y.append(random.randint(0,100))
+  #Y.append(mqtt.imu_reading)
 
   trace = go.Scatter(
     x=list(X),
