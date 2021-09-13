@@ -45,15 +45,11 @@ class MqttHandler():
         self.client.on_disconnect = self.__on_disconnect
 
         # enable TLS
-        self.client.tls_set(tls_version=mqtt.ssl.PROTOCOL_TLS)
+        self.client.tls_set(tls_version=mqtt.ssl.PROTOCOL_TLSv1_2)
 
         # set username and password
-        self.client.username_pw_set("raspberrypi", "Yamfries19")
+        self.client.username_pw_set("frontend", "Yamfries19")
         self.client.connect(broker_ip, 8883, 10) # Connect to the local MQTT broker
- 
-        self.imu_reading_x = 0
-        self.imu_reading_y = 0
-        self.imu_reading_z = 0
 
         self.client.loop_start() # Start the MQTT Client        
       
@@ -127,9 +123,12 @@ class MqttHandler():
         data : 
             data
         """
-        data_dict = json.loads(data)
-        self.imu_reading_x = data_dict['ax']
-        self.imu_reading_y = data_dict['ay']
-        self.imu_reading_z = data_dict['az']
-        return
+
+        self.data_dict = json.loads(data)
+
+    def triggerShutdown(self, value):
+        self.client.publish(MQTT_PUB_TOPICS['SHUTDOWN_TOPIC'],
+                          payload=value,
+                          qos=2,
+                          retain=False)
 

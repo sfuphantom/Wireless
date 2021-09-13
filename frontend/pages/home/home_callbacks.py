@@ -3,7 +3,7 @@ from dash.dependencies import Input, Output
 
 import plotly.express as px
 import plotly.graph_objs as go
-from app import app
+from app import app, mqtt
 
 from collections import deque
 import random
@@ -18,14 +18,27 @@ initial_trace = go.Scatter(x=list(X), y=list(Y), name='Scatter', mode='lines+mar
 graphs_list = [
   {
     "title": "Acceleration on X-axis",
+    "X": deque(maxlen=10),
+    "Y": deque(maxlen=10),
+    "data_key": "ax"
   },
   {
     "title": "Acceleration on Y-axis",
+    "X": deque(maxlen=10),
+    "Y": deque(maxlen=10),
+    "data_key": "ay"
   },
   {
     "title": "Acceleration on Z-axis",
+    "X": deque(maxlen=10),
+    "Y": deque(maxlen=10),
+    "data_key": "az"
   }
 ] 
+
+for graph in graphs_list:
+  graph['X'].append(1)
+  graph['Y'].append(1)
 
 #button click
 @app.callback(
@@ -37,10 +50,7 @@ def button_clicked(n_clicks):
     if n_clicks is None:
       return dash.no_update
 
-    """mqtt.client.publish(MQTT_PUB_TOPICS['SHUTDOWN_TOPIC'],
-                      payload=1,
-                      qos=2,
-                      retain=False)"""
+    mqtt.triggerShutdown(1)
     return 'stop button pressed'
   except Exception as e:
     print(e)
@@ -54,17 +64,20 @@ def button_clicked(n_clicks):
 )
 def update_graph(n):
   try:
-    X.append(X[-1]+1)
-    Y.append(random.randint(0,100))
+    #X.append(X[-1]+1)
+    #Y.append(random.randint(0,100))
     #Y.append(mqtt.imu_reading_x)
 
     returned_graphs = []
     for graph in graphs_list:
+      graph['X'].append(graph['X'][-1]+1)
+      graph['Y'].append(mqtt.data_dict[graph["data_key"]])
+
       fig = go.Figure()
       fig.add_traces(
         go.Scatter(
-          x=list(X),
-          y=list(Y),
+          x=list(graph['X']),
+          y=list(graph['Y']),
           name = 'Scatter',
           mode = 'lines+markers', line_color='#ffa600')
       )
@@ -74,8 +87,8 @@ def update_graph(n):
         paper_bgcolor= '#262626',
         plot_bgcolor = '#262626',
         title = graph['title'],
-        xaxis=dict(gridcolor = 'white', title = 'time (s)', range=[min(X),max(X)]), 
-        yaxis=dict(gridcolor = 'white', title = 'Acc (m/s2)', range=[min(Y),max(Y)]),
+        xaxis=dict(gridcolor = 'white', title = 'time (s)', range=[min(graph['X']),max(graph['X'])]), 
+        yaxis=dict(gridcolor = 'white', title = 'Acc (m/s2)', range=[min(graph['Y']),max(graph['Y'])]),
         font_color = '#FF6361'
       )
 
