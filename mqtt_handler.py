@@ -43,9 +43,17 @@ class MqttHandler():
         self.client.on_connect = self.__on_connect # Call this function when client successfully connects
         self.client.on_message = self.__on_message # Call this function when message is received on a subscribed topic
         self.client.on_disconnect = self.__on_disconnect
-        self.client.connect(broker_ip, 1883, 60) # Connect to the local MQTT broker
 
-        self.imu_reading = 0
+        # enable TLS
+        self.client.tls_set(tls_version=mqtt.ssl.PROTOCOL_TLS)
+
+        # set username and password
+        self.client.username_pw_set("raspberrypi", "Yamfries19")
+        self.client.connect(broker_ip, 8883, 10) # Connect to the local MQTT broker
+ 
+        self.imu_reading_x = 0
+        self.imu_reading_y = 0
+        self.imu_reading_z = 0
 
         self.client.loop_start() # Start the MQTT Client        
       
@@ -120,6 +128,8 @@ class MqttHandler():
             data
         """
         data_dict = json.loads(data)
-        self.imu_reading = data_dict['ax']
+        self.imu_reading_x = data_dict['ax']
+        self.imu_reading_y = data_dict['ay']
+        self.imu_reading_z = data_dict['az']
         return
 

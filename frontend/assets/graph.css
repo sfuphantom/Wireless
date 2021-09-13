@@ -1,0 +1,8 @@
+.data-graph {
+  display: inline-block;
+  width: 32%;
+  overflow: hidden;
+  vertical-align: top;
+  margin-left: 0.2%;
+  margin-right: 0.2%
+}

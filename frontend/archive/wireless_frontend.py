@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from mqtt_handler import *
 
 FRONTEND_NAME = "Frontend"
-MQTT_BROKER_IP = "localhost"
+MQTT_BROKER_IP = "78da1aca5bac48ceb4c9d7eff3de95e9.s1.eu.hivemq.cloud"
 
 server = flask.Flask('app')
 #server.secret_key = os.environ.get('secret_key', 'secret')
@@ -28,7 +28,7 @@ server = flask.Flask('app')
 
 app = dash.Dash('app', server=server)
 
-#mqtt = MqttHandler(FRONTEND_NAME, MQTT_BROKER_IP)
+mqtt = MqttHandler(FRONTEND_NAME, MQTT_BROKER_IP)
 
 app.scripts.config.serve_locally = False
 dcc._js_dist[0]['external_url'] = 'https://cdn.plot.ly/plotly-basic-latest.min.js'
@@ -51,7 +51,7 @@ children = [
     html.Div(children=[
       dcc.Graph(
         id='live-graph', 
-        animate=True, 
+        animate=False, 
         figure={'data': [initial_trace],
         'layout': go.Layout(
           xaxis=dict(range=[min(X), max(X)]), 
@@ -109,22 +109,26 @@ children = [
   Input(component_id='stop-button', component_property= 'n_clicks') 
 )
 def button_clicked(n_clicks):
-  if n_clicks is None:
-    return dash.no_update
+  try:
+    if n_clicks is None:
+      return dash.no_update
 
-  mqtt.client.publish(MQTT_PUB_TOPICS['SHUTDOWN_TOPIC'],
-                    payload=1,
-                    qos=2,
-                    retain=False)
-  return 'stop button pressed'
+    mqtt.client.publish(MQTT_PUB_TOPICS['SHUTDOWN_TOPIC'],
+                      payload=1,
+                      qos=2,
+                      retain=False)
+    return 'stop button pressed'
+  except Exception as e:
+    print(e)
+
 
 @app.callback(
   Output(component_id='live-graph', component_property='figure'),
 [Input(component_id='graph-update', component_property='n_intervals')])
 def update_graph(n):
   X.append(X[-1]+1)
-  Y.append(random.randint(0,100))
-  #Y.append(mqtt.imu_reading)
+  #Y.append(random.randint(0,100))
+  Y.append(mqtt.imu_reading_x)
 
   trace = go.Scatter(
     x=list(X),
@@ -138,7 +142,7 @@ def update_graph(n):
     plot_bgcolor = '#262626',
     title = 'Battery SoC',
     xaxis=dict(gridcolor = 'white', title = 'time (s)', range=[min(X),max(X)]), 
-    yaxis=dict(gridcolor = 'white', title = 'SoC (%)', range=[min(Y),max(Y)]),
+    yaxis=dict(gridcolor = 'white', title = 'Acc (m/s2)', range=[min(Y),max(Y)]),
     font_color = '#FF6361'
     )}
 
