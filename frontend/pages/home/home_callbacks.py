@@ -7,6 +7,7 @@ from app import app, mqtt
 
 from collections import deque
 import random
+import numpy as np
 
 #initial figure of live updating test graph
 X = deque(maxlen=10)
@@ -14,6 +15,10 @@ X.append(1)
 Y = deque(maxlen=10)
 Y.append(1)
 initial_trace = go.Scatter(x=list(X), y=list(Y), name='Scatter', mode='lines+markers')
+
+resolution = 10
+t = np.linspace(0, np.pi * 2, resolution)
+x, y = np.cos(t), np.sin(t)
 
 graphs_list = [
   {
@@ -67,7 +72,6 @@ def update_graph(n):
     #X.append(X[-1]+1)
     #Y.append(random.randint(0,100))
     #Y.append(mqtt.imu_reading_x)
-
     returned_graphs = []
     for graph in graphs_list:
       graph['X'].append(graph['X'][-1]+1)
@@ -94,6 +98,12 @@ def update_graph(n):
 
       returned_graphs.append(fig)
 
-    return returned_graphs
+    graph = graphs_list[0]
+    print("hello")
+
+    return [dict(x=[graph['X'][-1]], y=[mqtt.data_dict[graph["data_key"]]]), [0], 10],\
+           [dict(x=[graph['X'][-1]], y=[mqtt.data_dict[graph["data_key"]]]), [0], 10],\
+           [dict(x=[graph['X'][-1]], y=[mqtt.data_dict[graph["data_key"]]]), [0], 10]
+
   except Exception as e:
     print(e)
