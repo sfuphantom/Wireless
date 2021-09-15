@@ -31,7 +31,6 @@ def GraphComponent(graph_name, graph_id, interval_id, style={}, data={'x':[], 'y
     children=[
       dcc.Graph(
         id=graph_id, 
-        animate=False,
         figure=fig 
       )],
     style=style

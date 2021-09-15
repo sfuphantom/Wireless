@@ -14,7 +14,6 @@ figure = dict(data=[{'x': [], 'y': []}], layout=dict(xaxis=dict(range=[-1, 1]), 
 layout = html.Div(style={'backgroundColor': '#3A3A3A', 'color': '#3A3A3A', 'height':'100vh', 'width':'100%', 'height':'100%', 'top':'0px', 'left':'0px'},
 #style={'backgroundColor': '#3A3A3A'}, 
 children = [
-  #html.H1(children="Wireless GUI",style={'text-align':'center', 'color':'#FF6361'}),
   # first row
   html.Div(dbc.Row([
     # first column of first row
@@ -27,9 +26,12 @@ children = [
 
   html.Div(dbc.Row([
     # first column of first row
-    GraphComponent("Acceleration on Y-axis", "live-graph-4", "graph-interval-1", style={"marginLeft":"1%"}),
+    GraphComponent("Angular Acceleration on Y-axis", "live-graph-4", "graph-interval-1", style={"marginLeft":"1%"}),
     StopButton(style={'width':'32%', 'display':'inline-block', 'marginRight':'0.2%', 'marginLeft':'0.2%'}),
-    GraphComponent("Acceleration on Y-axis", "live-graph-6", "graph-interval-1"),   
+    GraphComponent("Angular Acceleration on Y-axis", "live-graph-5", "graph-interval-1"),   
 
-  ], no_gutters=True)), 
+  ], no_gutters=True), style={'margin':'auto'}), 
+
+  html.Div(dbc.Row([GraphComponent("Angular Acceleration on Y-axis", "live-graph-6", "graph-interval-1", style={'width':'95%', 'margin':'auto'})]))
+
 ])
