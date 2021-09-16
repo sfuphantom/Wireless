@@ -8,10 +8,12 @@ import dash_bootstrap_components as dbc
 import pages.home.home_callbacks
 from components.graph_component import GraphComponent
 from components.stop_button import StopButton
+from components.graduated_bar import GraduatedBar
+from components.gauge import Gauge
 
 figure = dict(data=[{'x': [], 'y': []}], layout=dict(xaxis=dict(range=[-1, 1]), yaxis=dict(range=[-1, 1])))
 
-layout = html.Div(style={'backgroundColor': '#3A3A3A', 'color': '#3A3A3A', 'height':'100vh', 'width':'100%', 'height':'100%', 'top':'0px', 'left':'0px'},
+layout = html.Div(style={'backgroundColor': '#3A3A3A', 'color': '#3A3A3A', 'width':'100%', 'height':'100%', 'top':'0px', 'left':'0px'},
 #style={'backgroundColor': '#3A3A3A'}, 
 children = [
   # first row
@@ -26,12 +28,19 @@ children = [
 
   html.Div(dbc.Row([
     # first column of first row
+ 
     GraphComponent("Angular Acceleration on Y-axis", "live-graph-4", "graph-interval-1", style={"marginLeft":"1%"}),
-    StopButton(style={'width':'32%', 'display':'inline-block', 'marginRight':'0.2%', 'marginLeft':'0.2%'}),
-    GraphComponent("Angular Acceleration on Y-axis", "live-graph-5", "graph-interval-1"),   
+    html.Div(children=[
+      StopButton(),
+      GraduatedBar(3.5, 'horizontal'),
+    ], style={'width':'32%', 'height': '32%','display':'inline-block', 'textAlign': 'center', 'marginTop':'0.5%', 'marginLeft':'.2%'}),
+    GraphComponent("Angular Acceleration on Y-axis", "live-graph-5", "graph-interval-1", style={"marginLeft":".4%"}),   
+  ], no_gutters=True)), 
 
-  ], no_gutters=True), style={'margin':'auto'}), 
-
-  html.Div(dbc.Row([GraphComponent("Angular Acceleration on Y-axis", "live-graph-6", "graph-interval-1", style={'width':'95%', 'margin':'auto'})]))
-
+  html.Div(dbc.Row([
+    # third row
+    Gauge(109)
+    
+  ], style={'marginTop':'0.5%', 'marginLeft': '1%'}, no_gutters=True)), 
 ])
+
