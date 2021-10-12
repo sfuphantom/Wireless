@@ -4,39 +4,33 @@ TIMEOUT = 60
 
 graphs_list = [
   {
-    "title": "Acceleration on X-axis",
+    "title": "Battery SOC",
     "X": 0,
     "Y": 0,
-    "data_key": "ax"
+    "data_key": "bs"
+ },
+  {
+    "title": "Brake Pedal & Foot Pedal Angle",
+    "X": 0,
+    "Y": 0,
+    "data_key": "bp"
   },
   {
-    "title": "Acceleration on Y-axis",
+    "title": "GPS",
     "X": 0,
     "Y": 0,
-    "data_key": "ay"
+    "data_key": "gps"
   },
   {
-    "title": "Acceleration on Z-axis",
+    "title": "XYZ Linear Acceleration",
     "X": 0,
     "Y": 0,
-    "data_key": "az"
+    "data_key": "xyzla"
   },
   {
-    "title": "Angular Acceleration on X-axis",
+    "title": "XYZ Gyroscope",
     "X": 0,
     "Y": 0,
-    "data_key": "gx"
+    "data_key": "xyzg"
   },
-  {
-    "title": "Angular Acceleration on Y-axis",
-    "X": 0,
-    "Y": 0,
-    "data_key": "gy"
-  },
-  {
-    "title": "Angular Acceleration on Z-axis",
-    "X": 0,
-    "Y": 0,
-    "data_key": "gz"
-  },  
 ] 

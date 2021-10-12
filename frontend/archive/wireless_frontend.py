@@ -28,7 +28,7 @@ server = flask.Flask('app')
 
 app = dash.Dash('app', server=server)
 
-mqtt = MqttHandler(FRONTEND_NAME, MQTT_BROKER_IP)
+#mqtt = MqttHandler(FRONTEND_NAME, MQTT_BROKER_IP)
 
 app.scripts.config.serve_locally = False
 dcc._js_dist[0]['external_url'] = 'https://cdn.plot.ly/plotly-basic-latest.min.js'
@@ -38,6 +38,8 @@ X = deque(maxlen=10)
 X.append(1)
 Y = deque(maxlen=10)
 Y.append(1)
+Y2 = deque(maxlen=10)
+Y2.append(1)
 initial_trace = go.Scatter(x=list(X), y=list(Y), name='Scatter', mode='lines+markers')
 
 app.layout = html.Div(style={'backgroundColor': '#3A3A3A', 'color': '#3A3A3A', 'height':'100vh', 'width':'100%', 'height':'100%', 'top':'0px', 'left':'0px'},
@@ -52,8 +54,9 @@ children = [
       dcc.Graph(
         id='live-graph', 
         animate=False, 
-        figure={'data': [initial_trace],
+        figure={'data': [initial_trace], 'name':'Test Data',
         'layout': go.Layout(
+          showlegend= True,
           xaxis=dict(range=[min(X), max(X)]), 
           yaxis=dict(range=[min(Y), max(Y)])),
           }
@@ -82,9 +85,14 @@ children = [
     html.Div(children=[
       dcc.Graph(
         id = 'graph3', 
-        figure={'data':[go.Scatter(x=[1,3,7,9,11], y=[3,5,12,14,15], line_color='#ffa600')],
+        figure={'data':[go.Scatter(x=[1,3,7,9,11], y=[3,5,12,14,15], line_color='#ffa600', 
+        name = 'Data1'), 
+        go.Scatter(x=[11,4,5,6,7], y=[3,5,6,3,1], line_color='blue', 
+        name = 'Data')
+        ],
         'layout' : go.Layout(title = 'Graph 3',paper_bgcolor= '#262626',
         plot_bgcolor = '#262626',
+        showlegend=True,
         xaxis=dict(gridcolor = 'white', title = 'x'), 
         yaxis=dict(gridcolor = 'white', title = 'y'),
         font_color = '#FF6361')}
@@ -127,20 +135,28 @@ def button_clicked(n_clicks):
 [Input(component_id='graph-update', component_property='n_intervals')])
 def update_graph(n):
   X.append(X[-1]+1)
-  #Y.append(random.randint(0,100))
-  Y.append(mqtt.imu_reading_x)
+  Y.append(random.randint(0,100))
+  #Y.append(mqtt.imu_reading_x)
+  Y2.append(random.randint(0,100))
 
   trace = go.Scatter(
     x=list(X),
     y=list(Y),
-    name = 'Scatter',
-    mode = 'lines+markers', line_color='#ffa600')
+    name = 'live data test',
+    mode = 'lines+markers', line_color='#ffa600'),
+
+  add_trace = go.Scatter(
+    x=list(X),
+    y=list(Y2),
+    name='multiple dataset',
+    mode = 'lines', line_color='blue'),
 
   return {'data': [trace], 
   'layout' : go.Layout(
     paper_bgcolor= '#262626',
     plot_bgcolor = '#262626',
     title = 'Battery SoC',
+    showlegend= True,
     xaxis=dict(gridcolor = 'white', title = 'time (s)', range=[min(X),max(X)]), 
     yaxis=dict(gridcolor = 'white', title = 'Acc (m/s2)', range=[min(Y),max(Y)]),
     font_color = '#FF6361'

@@ -1,0 +1,72 @@
+body {
+    width: 100%;
+    background: #262626;
+    position:relative;
+    top: 0;
+    right: 0;
+    font-weight: sans-serif;
+    color: lightgrey
+}
+.app-header {
+    height: 50px;
+    line-height: 60px;
+    font-size: 40px;
+    color: lightgrey;
+    margin-bottom: 0px;
+    /*color: #E5E5E5;*/
+    width: 60%;
+}
+.app-title{
+    font-size: 25px;
+    color: lightgrey;
+    margin-left: 3px;
+    border-bottom: thin lightgrey solid;
+}
+.mini_container {
+    margin-bottom: 15px !important;
+    border-radius: 3px;
+    background-color: #545454;
+    padding: 5px;
+    position: relative;
+    box-shadow: 2px 2px 2px lightgrey;
+    height: 142px;
+  }
+.wheel_container{
+    margin-bottom: 15px !important;
+    border-radius: 3px;
+    background-color: #545454;
+    padding: 5px;
+    position: relative;
+    box-shadow: 2px 2px 2px lightgrey;
+    height: 310px;
+}
+
+.graph_container{
+    margin-bottom: 15px !important;
+    border-radius: 3px;
+    background-color: #545454;
+    padding: 5px;
+    position: relative;
+    box-shadow: 2px 2px 2px lightgrey;
+}
+.col_margin{
+    padding-right: 10px;
+    padding-left: 10px;
+}
+h4{
+    text-align: center;
+    font-size: 1.5rem;
+}
+h5 {
+    text-align: center;
+    font-size: 3rem;
+    vertical-align:middle;
+    margin-top:15px
+}
+
+h6{
+    text-align: center;
+    color: white;
+    font-size: 20;
+}
+

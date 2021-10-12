@@ -29,17 +29,18 @@ def button_clicked(n_clicks):
                Output(component_id='live-graph-2', component_property='extendData'),
                Output(component_id='live-graph-3', component_property='extendData'),
                Output(component_id='live-graph-4', component_property='extendData'),
-               Output(component_id='live-graph-5', component_property='extendData'),
-               Output(component_id='live-graph-6', component_property='extendData')],
+               Output(component_id='live-graph-5', component_property='extendData')],
               [Input('graph-interval-1', 'n_intervals')])
-def update_data(n_intervals):
-    returned_data = []
-
+def update_data(n):
+  returned_data = []
+  try:
     for graph in graphs_list:
       graph['X'] += 1
-      graph['Y'] = mqtt.data_dict[graph["data_key"]]
+      #graph['Y'] = mqtt.data_dict[graph["data_key"]]
+      graph['Y'] = (random.randint(0,100))
+      returned_data.append([dict(x=[[graph['X']]], y=[[graph['Y']]]), [0], 15])
 
-      returned_data.append([dict(x=[[graph['X']]], y=[[graph['Y']]]), [0], 10])
-
-    # tuple is (dict of new data, target trace index, number of points to keep)
+# tuple is (dict of new data, target trace index, number of points to keep)
     return returned_data
+  except Exception as e:
+    print(e)
