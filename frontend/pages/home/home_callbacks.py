@@ -27,7 +27,6 @@ def button_clicked(n_clicks):
 # Graph update
 @app.callback([Output(component_id='live-graph-1', component_property='extendData'),
                Output(component_id='live-graph-2', component_property='extendData'),
-               Output(component_id='live-graph-3', component_property='extendData'),
                Output(component_id='live-graph-4', component_property='extendData'),
                Output(component_id='live-graph-5', component_property='extendData')],
               [Input('graph-interval-1', 'n_intervals')])
@@ -35,12 +34,30 @@ def update_data(n):
   returned_data = []
   try:
     for graph in graphs_list:
-      graph['X'] += 1
-      #graph['Y'] = mqtt.data_dict[graph["data_key"]]
-      graph['Y'] = (random.randint(0,100))
-      returned_data.append([dict(x=[[graph['X']]], y=[[graph['Y']]]), [0], 15])
+      if graph['title'] != "GPS":
+        graph['X'] += 1
+        #graph['Y'] = mqtt.data_dict[graph["data_key"]]
+        graph['Y'] = (random.randint(0,100))
+        returned_data.append([dict(x=[[graph['X']]], y=[[graph['Y']]]), [0], 15])
 
 # tuple is (dict of new data, target trace index, number of points to keep)
     return returned_data
   except Exception as e:
     print(e)
+
+@app.callback([Output(component_id='live-graph-3', component_property='extendData')],
+              [Input('graph-interval-2', 'n_intervals')])
+def update_gps(n):
+  returned_data = []
+  try:
+    graph = graphs_list[2]
+    graph['X'] += 1
+    #graph['Y'] = mqtt.data_dict[graph["data_key"]]
+    graph['Y'] = (random.randint(0,100))
+    returned_data = [[dict(x=[[graph['X']],[graph['X']],[graph['X']],[graph['X']]],\
+                    y=[[graph['Y']],[random.randint(0,100)],[random.randint(0,100)],[random.randint(0,100)]]), [0,1,2,3], 15]]
+
+# tuple is (dict of new data, target trace index, number of points to keep)
+    return returned_data
+  except Exception as e:
+    print(e)  

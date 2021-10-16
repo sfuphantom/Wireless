@@ -17,6 +17,7 @@ figure = dict(data=[{'x': [], 'y': []}], layout=dict(xaxis=dict(range=[-1, 1]), 
 layout = html.Div(children=[
 
 dcc.Interval(id='graph-interval-1', interval=1000*1),
+dcc.Interval(id='graph-interval-2', interval=1000*1),
 
   html.Div(children=[
     logo(),
@@ -66,7 +67,7 @@ dcc.Interval(id='graph-interval-1', interval=1000*1),
       )]),
 
   html.Div(dbc.Row([
-    dbc.Col(GraphComponent("GPS", "live-graph-3", "graph-interval-1", 'Position Z'), 
+    dbc.Col(GraphComponent("GPS", "live-graph-3", "graph-interval-2", 'Position Z'), 
     width=6, className='col_margin'),
     dbc.Col(GraphComponent("XYZ Linear Acceleration", "live-graph-4", "graph-interval-1", 'XYZ'), 
     width=3, className='col_margin'),

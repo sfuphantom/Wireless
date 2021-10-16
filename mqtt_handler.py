@@ -45,7 +45,7 @@ class MqttHandler():
         self.client.on_disconnect = self.__on_disconnect
 
         # enable TLS
-        self.client.tls_set(tls_version=mqtt.ssl.PROTOCOL_TLSv1_2)
+        self.client.tls_set(tls_version=mqtt.ssl.PROTOCOL_TLS)
 
         # set username and password
         self.client.username_pw_set("frontend", "Yamfries19")

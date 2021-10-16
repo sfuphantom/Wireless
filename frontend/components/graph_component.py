@@ -18,6 +18,28 @@ def GraphComponent(graph_name, graph_id, interval_id, y_axis_title, style={}, da
         line_color='#ffa600')
     )
 
+    if graph_name == "GPS":
+      fig.add_traces([
+        go.Scatter(
+          x=[],
+          y=[],
+          name = 'Scatter2',
+          mode = 'lines', 
+          line_color='blue'),
+        go.Scatter(
+          x=[],
+          y=[],
+          name = 'Scatter3',
+          mode = 'lines', 
+          line_color='red'),
+        go.Scatter(
+          x=[],
+          y=[],
+          name = 'Scatter4',
+          mode = 'lines', 
+          line_color='white')    
+      ])      
+
     fig.update_layout(
       uirevision='constant',
       paper_bgcolor= '#545454',
