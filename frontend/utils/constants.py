@@ -1,4 +1,6 @@
 home_page_location = "/"
+page_2_location = "/page-2"
+page_3_location = "/page-3"
 
 TIMEOUT = 60
 
@@ -10,7 +12,7 @@ graphs_list = [
     "data_key": "bs"
  },
   {
-    "title": "Brake Pedal & Foot Pedal Angle",
+    "title": "Pedal Angle",
     "X": 0,
     "Y": 0,
     "data_key": "bp"
@@ -33,4 +35,10 @@ graphs_list = [
     "Y": 0,
     "data_key": "xyzg"
   },
+  {
+    "title": "Battery Temperature",
+    "X": 0,
+    "Y": 0,
+    "data_key": "BT"
+  }
 ] 
