@@ -40,5 +40,11 @@ graphs_list = [
     "X": 0,
     "Y": 0,
     "data_key": "BT"
+  },
+  {
+    "title": "Battery Voltage",
+    "X": 0,
+    "Y": 0,
+    "data_key": "BV"
   }
 ] 

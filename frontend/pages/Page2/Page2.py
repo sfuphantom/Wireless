@@ -9,6 +9,7 @@ from components.stop import StopButton
 from components.gauge import Gauge
 from components.logo import logo
 from components.graph_component import GraphComponent
+from components.interval import graphInterval
 
 layout = html.Div(children=[
 
@@ -25,10 +26,13 @@ dcc.Interval(id='graph-interval-1', interval=1000*1),
     
   html.Br(),
   html.Div(dbc.Row([
-        dbc.Col(GraphComponent("Battery Temperature", "battery-temp-graph", "graph-interval-1", '°C'), 
-          width=6, className='col_margin'),
-        dbc.Col(GraphComponent("Battery Voltage", "battery-voltage-graph", 'graph-interval-1', "Voltage (V)"), 
-          width=3, className='col_margin'),
-        ]),
-        )
+    dbc.Col(html.Div([
+      GraphComponent("Battery Temperature", "battery-temp-graph", 'batterytemp-int', 'batterytemp-rate', False, "graph-interval-1", '°C'), 
+      graphInterval('batterytemp-interval'),
+    ]), width=6, className='col_margin'),
+    dbc.Col(html.Div([
+      GraphComponent("Battery Voltage", "battery-voltage-graph", 'batteryvoltage-int', 'batteryvoltage-rate', False, 'graph-interval-1', "Voltage (V)"), 
+      graphInterval('batteryvoltage-interval'),        
+    ]), width=3, className='col_margin'),
+  ]),)
 ])
