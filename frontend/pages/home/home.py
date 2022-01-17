@@ -7,31 +7,104 @@ import dash_bootstrap_components as dbc
 
 import pages.home.home_callbacks
 from components.graph_component import GraphComponent
-from components.stop_button import StopButton
+from components.stop import StopButton
+from components.gauge import Gauge
+from components.logo import logo
+from components.interval import graphInterval
 
 figure = dict(data=[{'x': [], 'y': []}], layout=dict(xaxis=dict(range=[-1, 1]), yaxis=dict(range=[-1, 1])))
 
-layout = html.Div(style={'backgroundColor': '#3A3A3A', 'color': '#3A3A3A', 'height':'100vh', 'width':'100%', 'height':'100%', 'top':'0px', 'left':'0px'},
-#style={'backgroundColor': '#3A3A3A'}, 
-children = [
-  # first row
-  html.Div(dbc.Row([
-    # first column of first row
-    dcc.Interval(id='graph-interval-1', interval=1000),
-    GraphComponent("Acceleration on X-axis", "live-graph-1", "graph-interval-1", style={"marginLeft":"1%"}),
-    GraphComponent("Acceleration on Y-axis", "live-graph-2", "graph-interval-1"),
-    GraphComponent("Acceleration on Y-axis", "live-graph-3", "graph-interval-1"),
+layout = html.Div(children=[
 
-  ], no_gutters=True)),
+  dcc.Interval(id='graph-interval-1', interval=1000*1),
+
+  html.Div(children=[
+    logo(),
+    html.Div('Team Phantom', className='app-header', style={'dispay':'inline-block'}),
+    ]),
 
   html.Div(dbc.Row([
-    # first column of first row
-    GraphComponent("Angular Acceleration on Y-axis", "live-graph-4", "graph-interval-1", style={"marginLeft":"1%"}),
-    StopButton(style={'width':'32%', 'display':'inline-block', 'marginRight':'0.2%', 'marginLeft':'0.2%'}),
-    GraphComponent("Angular Acceleration on Y-axis", "live-graph-5", "graph-interval-1"),   
+    html.Label('PHANTOM 1 ANALYTICS', className='app-title', style={'width':'80%'}), 
+    html.Div(StopButton())], justify='around')), 
+    
+  html.Br(),
 
-  ], no_gutters=True), style={'margin':'auto'}), 
+ #div for battery components 
+  html.Div(children=[(dbc.Row([
+    
+    dbc.Col(html.Div([ 
+      dbc.Row([dbc.Col(html.Div(children=[
+        html.Tr("Front Left"),
+        html.H4(('00'), style={'color':'#a265d7'})], className="mini_container2"), 
+        style={}, className='col_margin')]),
+      dbc.Row([dbc.Col(html.Div(children=[
+        html.Tr("Back Left"),
+        html.H4(('00'), style={'color':'#a265d7'})], className="mini_container2"), 
+        style={}, className='col_margin')]),  
+        ]), width = 2),
+    dbc.Col(html.Div([
+      dbc.Row([dbc.Col(html.Div(children=[
+        html.Tr("Front Right"),
+        html.H4(('00'), style={'color':'#a265d7'})], className="mini_container2"), 
+        style={}, className='col_margin')]),  
+      dbc.Row([dbc.Col(html.Div(children=[
+        html.Tr("Back Right"),
+        html.H4(('00'), style={'color':'#a265d7'})], className="mini_container2"), 
+        style={}, className='col_margin')])
+    ]), width = 2),
+    dbc.Col(html.Div([
+      dbc.Row([dbc.Col(html.Div(children=[
+        html.H4(("Tire Temp"), style = {'font-size':'15px'}),
+        html.H4(('00'), style={'color':'#a265d7'})], className="mini_container2"), 
+        style={}, className='col_margin')]),  
+      dbc.Row([dbc.Col(html.Div(children=[
+        html.H4(("N/A"), style = {'font-size':'15px'}),
+        html.H4(('00'), style={'color':'#a265d7'})], className="mini_container2"), 
+        style={}, className='col_margin')])
+    ]), width = 2),
+    dbc.Col(html.Div(), width=3),
+    # dbc.Col(GraphComponent('Pedal Angle', "live-graph-2", True, "interval-component", 'Pedal Position'), 
+    #   width=4, className='col_margin'),
+    dbc.Col(html.Div(Gauge('gauge')), style={'align':'center'}, width = 3),
+    ])),
 
-  html.Div(dbc.Row([GraphComponent("Angular Acceleration on Y-axis", "live-graph-6", "graph-interval-1", style={'width':'95%', 'margin':'auto'})]))
+    html.Div(dbc.Row([
+      # dbc.Col(GraphComponent("GPS", "live-graph-3", False, "graph-interval-1", 'Latitude'), 
+      #   width=6, className='col_margin'),
+      dbc.Col(html.Div([
+        GraphComponent('Pedal Angle', "pedal-angle-graph", 'pedalangle-int','pedalangle-rate', True, 'Pedal Position'),
+        graphInterval('pedalangle_interval')
+      ]), width=6, className='col_margin'),
+      dbc.Col(html.Div([
+        GraphComponent("Battery SOC", "battery-soc-graph", 'batterySOC-int','batterySOC-rate', False, "%"), 
+        graphInterval('batterysoc_interval')
+      ]), width=3, className='col_margin'),
 
+      dbc.Col(html.Div([
+        dbc.Row([dbc.Col(html.Div(children=[
+          html.H4("Battery Temperature", style={'font-size':'15px'}), 
+          html.H4(id='battery-temp-value', style={'color':'#c492f0', 'font-size':'20px'})], className="mini_container2"), 
+          style={}, className='col_margin')]),
+        dbc.Row([dbc.Col(html.Div(children=[
+          html.H4("Battery Voltage", style={'font-size':'15px'}), 
+          html.H4(id='battery-voltage-value', style={'color':'#c492f0', 'font-size':'20px'})], className="mini_container2"), 
+          style={}, className='col_margin')]),
+        dbc.Row([dbc.Col(html.Div(children=[
+          html.H4("Battery Current"), 
+          html.H4(('00'), style={'color':'#a265d7', 'font-size':'15px'})], className="mini_container2"), 
+          style={}, className='col_margin')])
+        ])),
+      ]),
+      )]),
+
+  html.Div(dbc.Row([
+    dbc.Col(html.Div([
+      GraphComponent("XYZ Gyroscope", "XYZ-gyroscope-graph", 'XYZgyroscope-int', 'XYZgyroscope-rate', True, 'Degrees/Sec'), 
+      graphInterval('XYZgyroscope-interval'),
+      ]), width=6, className='col_margin'),
+    dbc.Col(html.Div([
+      GraphComponent("XYZ Linear Acceleration", "XYZ-Linear-Acceleration", 'XYZlinear-int', 'XYZlinear-rate', True, 'm/s2'), 
+      graphInterval('XYZlinear-interval'),
+      ]), width=6, className='col_margin')
+    ])),
 ])

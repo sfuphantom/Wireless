@@ -1,9 +1,11 @@
 .data-graph {
-  display: inline-block;
+  /*display: inline-block;
   width: 32%;
+  height: 32%;*/
+  position: relative;
   overflow: hidden;
   vertical-align: top;
-  margin-left: 0.2%;
+  /*margin-left: 0.2%;
   margin-right: 0.2%;
-  margin-top: 0.5%;
+  margin-top: 0.5%;*/
 }

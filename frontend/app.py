@@ -1,5 +1,7 @@
 import dash
 import dash_bootstrap_components as dbc
+import dash_html_components as html
+import dash_core_components as dcc
 
 from utils.external_assets import FONT_AWSOME, CUSTOM_STYLE
 from layout.layout import layout
@@ -14,7 +16,7 @@ from mqtt_handler import *
 FRONTEND_NAME = "Frontend"
 MQTT_BROKER_IP = "78da1aca5bac48ceb4c9d7eff3de95e9.s1.eu.hivemq.cloud"
 
-mqtt = MqttHandler(FRONTEND_NAME, MQTT_BROKER_IP)
+#mqtt = MqttHandler(FRONTEND_NAME, MQTT_BROKER_IP)
 
 server = flask.Flask(__name__) # define flask app.server
 
@@ -32,6 +34,10 @@ app = dash.Dash(
     ]
 )
 
-app.layout = layout
+app.layout = html.Div(children=[
+    layout,
+    dcc.Store(id='battery-temp-store', storage_type = 'session', data=[]),
+    dcc.Store(id='battery-voltage-store', storage_type = 'session', data=[])
+])
 
 server = app.server

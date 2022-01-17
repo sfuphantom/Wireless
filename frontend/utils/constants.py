@@ -1,42 +1,50 @@
 home_page_location = "/"
+page_2_location = "/page-2"
+page_3_location = "/page-3"
 
 TIMEOUT = 60
 
 graphs_list = [
   {
-    "title": "Acceleration on X-axis",
+    "title": "Battery SOC",
     "X": 0,
     "Y": 0,
-    "data_key": "ax"
+    "data_key": "bs"
+ },
+  {
+    "title": "Pedal Angle",
+    "X": 0,
+    "Y": 0,
+    "data_key": "bp"
   },
   {
-    "title": "Acceleration on Y-axis",
+    "title": "GPS",
     "X": 0,
     "Y": 0,
-    "data_key": "ay"
+    "data_key": "gps"
   },
   {
-    "title": "Acceleration on Z-axis",
+    "title": "XYZ Linear Acceleration",
     "X": 0,
     "Y": 0,
-    "data_key": "az"
+    "data_key": "xyzla"
   },
   {
-    "title": "Angular Acceleration on X-axis",
+    "title": "XYZ Gyroscope",
     "X": 0,
     "Y": 0,
-    "data_key": "gx"
+    "data_key": "xyzg"
   },
   {
-    "title": "Angular Acceleration on Y-axis",
+    "title": "Battery Temperature",
     "X": 0,
     "Y": 0,
-    "data_key": "gy"
+    "data_key": "BT"
   },
   {
-    "title": "Angular Acceleration on Z-axis",
+    "title": "Battery Voltage",
     "X": 0,
     "Y": 0,
-    "data_key": "gz"
-  },  
+    "data_key": "BV"
+  }
 ] 
