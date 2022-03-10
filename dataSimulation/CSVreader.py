@@ -2,9 +2,11 @@ from importlib.resources import path
 import pathlib
 import csv
 import json
+from sqlite3 import DataError
 import pandas as pd
 import time
 import os
+import threading
 
 endl = os.linesep
 
@@ -25,14 +27,7 @@ def data_get(fileLocation):
     dataFile = open(fileLocation, newline= '')
     sensorData = pd.read_csv(dataFile)
     return sensorData
-"""
-print(type(sensorData))
-print(sensorData)
-print(sensorData.index)
-print("\n")
-print(sensorData.iloc[0][0])
-print(sensorData.columns[0])
-"""
+
 def data_print(sensorData, t_0, t_1):
     #initial data point time
     t0 = sensorData.iloc[0][0]
@@ -46,61 +41,32 @@ def data_print(sensorData, t_0, t_1):
     # dataPointJSON(this will need to be sent over mqtt later) = 
         print(json.dumps(dataPointDICT))
 
-
-#data_print()
-
-#print(os.listdir(str(pathlib.Path().resolve()) + "/Wireless/dataSimulation/Data"))
-#print os.listdir(path)
- 
-#print(os.listdir(str(pathlib.Path().resolve()) + "\Wireless\dataSimulation\Data"))
-
-#print(os.listdir(simulationPath))
-    #dataPath = os.path.join(simulationPath, FileName)
-
 #(initial data point, final data point, interval in between)
-dataPointSetCount = 2
-for i in range (0,9,dataPointSetCount):
-    for dataFileName in os.listdir(simulationPath):
-        #print(os.path.join(simulationPath, dataFileName))
-
-        #initial and final points in terms of data points
-        t_0 = i
-        t_1 = i+dataPointSetCount
-        if dataFileName.endswith("Full.csv"):
-            sensorData = data_get(os.path.join(simulationPath, dataFileName))
-            print(endl + "Current data file: " + dataFileName)
-            data_print(sensorData, t_0, t_1)
-            #print(type(sensorData))
-    time.sleep(1.5)
-
+def main():
+    t1 = threading.Thread(target=data_print)
+    #pulling in initial data from csv files
+    fullData = {}
+    sensors = []
     
-#for j in range(0,4,1):
-    #print(j)
+    for dataFileName in os.listdir(simulationPath):
+        if dataFileName.endswith("Full.csv"): #condition on files, but not needed if all files are to be pulled in
+            sensorData = data_get(os.path.join(simulationPath, dataFileName))
+            fullData [dataFileName] = sensorData
+            sensors.append(dataFileName)
 
-#str(pathlib.Path().resolve()) + simulationPath + "\\codeTesting" 
+    dataPointSetCount = 2
+    for i in range (0,3,dataPointSetCount):
+        #data_print(fullData)
+        for dataFileName in os.listdir(simulationPath):
 
+            #initial and final points in terms of data points
+            t_0 = i
+            t_1 = i+dataPointSetCount
+            for fileName in sensors:
+                sensorData = fullData[fileName]
+                print(endl + "Current data file: " + fileName)
+                data_print(sensorData, t_0, t_1)
+            
+        time.sleep(1.5)
 
-
-
-"""
-    print(dataPointDICT)
-    print(type(dataPointDICT))
-
-    print(sensorData.index)
-
-    dataPointJSON = json.dumps(dataPoint)
-
-    print(dataPointJSON)
-    print(type(dataPointJSON))
-
-    df = pd.read_csv(dataFile)
-
-    print(df.to_string())
-
-    #initial time the data begins
-    #t0
-
-    dataPoint = {
-        
-    }
-"""
+main()
